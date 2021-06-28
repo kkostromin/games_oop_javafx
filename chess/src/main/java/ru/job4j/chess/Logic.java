@@ -9,19 +9,42 @@ public final class Logic {
     private int index = 0;
 
     public void add(Figure figure) {
-        figures[index++] = figure;
+        this.figures[index++] = figure;
+    }
+
+    public int figuresNumbers(){
+        return figures.length;
     }
 
     public void move(Cell source, Cell dest)
             throws FigureNotFoundException, ImpossibleMoveException, OccupiedCellException {
         int index = findBy(source);
-        Cell[] steps = figures[index].way(dest);
-        free(steps);
-        figures[index] = figures[index].copy(dest);
+
+        Cell[] steps = this.figures[index].way(dest);
+
+        /*реализация проверки занятости ячейки
+        если занято, выкидываем исключение  */
+
+        if (free(steps)) {
+            this.figures[index] = this.figures[index].copy(dest);
+        }
+        else {
+            throw new OccupiedCellException("Cell is occupied");
+        }
     }
 
+    // проверка зянятости ячейки при движении фигуры
+
     private boolean free(Cell[] steps) throws OccupiedCellException {
-        return true;
+        boolean rsl = true;
+        for (int j = 0; j < steps.length; j++) {
+            for (int i = 0; i < this.figures.length; i++) {
+                if (String.valueOf(this.figures[i].position()).equals(String.valueOf(steps[j]))) {
+                    rsl = false;
+                }
+            }
+        }
+        return rsl;
     }
 
     public void clean() {
