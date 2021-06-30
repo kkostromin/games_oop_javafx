@@ -7,43 +7,32 @@ import java.util.Arrays;
 public final class Logic {
     private final Figure[] figures = new Figure[32];
     private int index = 0;
+    private int indexFigureMove = 0;
 
     public void add(Figure figure) {
         this.figures[index++] = figure;
     }
 
-    public int figuresNumbers(){
-        return figures.length;
-    }
-
     public void move(Cell source, Cell dest)
             throws FigureNotFoundException, ImpossibleMoveException, OccupiedCellException {
         int index = findBy(source);
-
-        Cell[] steps = this.figures[index].way(dest);
-
-        /*реализация проверки занятости ячейки
-        если занято, выкидываем исключение  */
-
+        Cell[] steps = figures[index].way(dest);
         if (free(steps)) {
-            this.figures[index] = this.figures[index].copy(dest);
-        }
-        else {
-            throw new OccupiedCellException("Cell is occupied");
+            figures[index] = figures[index].copy(dest);
         }
     }
 
     // проверка зянятости ячейки при движении фигуры
-
     private boolean free(Cell[] steps) throws OccupiedCellException {
         boolean rsl = true;
-        for (int j = 0; j < steps.length; j++) {
-            for (int i = 0; i < this.figures.length; i++) {
-                if (String.valueOf(this.figures[i].position()).equals(String.valueOf(steps[j]))) {
-                    rsl = false;
+        for (Cell step : steps){
+            for (Figure figure : figures){
+                if (figure != null && String.valueOf(figure.position()).equals(String.valueOf(step))) {
+                        rsl = false;
+                        throw new OccupiedCellException("Cell is occupied");
+                    }
                 }
             }
-        }
         return rsl;
     }
 
