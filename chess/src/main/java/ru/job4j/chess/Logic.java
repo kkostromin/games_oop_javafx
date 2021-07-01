@@ -7,7 +7,6 @@ import java.util.Arrays;
 public final class Logic {
     private final Figure[] figures = new Figure[32];
     private int index = 0;
-    private int indexFigureMove = 0;
 
     public void add(Figure figure) {
         this.figures[index++] = figure;
@@ -17,9 +16,9 @@ public final class Logic {
             throws FigureNotFoundException, ImpossibleMoveException, OccupiedCellException {
         int index = findBy(source);
         Cell[] steps = figures[index].way(dest);
-        if (free(steps)) {
-            figures[index] = figures[index].copy(dest);
-        }
+        free(steps);
+        figures[index] = figures[index].copy(dest);
+
     }
 
     // проверка зянятости ячейки при движении фигуры
@@ -27,7 +26,7 @@ public final class Logic {
         boolean rsl = true;
         for (Cell step : steps){
             for (Figure figure : figures){
-                if (figure != null && String.valueOf(figure.position()).equals(String.valueOf(step))) {
+                if (figure != null && figure.position().equals(step)) {
                         rsl = false;
                         throw new OccupiedCellException("Cell is occupied");
                     }
